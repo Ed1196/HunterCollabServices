@@ -1,0 +1,88 @@
+from db import db
+from models.classes import ClassesModel
+from models.skills import SkillsModel
+
+
+class UserModel(db.Model):
+    """
+    A class used to represent a user model
+
+    Args
+    ----
+    db.Model: Model extends db. Lets sqlAlchemy that UserModel will be stored in the database
+
+
+    Attributes
+    ----------
+    __tablename__: Name of the table that will be created in the database.
+    id: Generates the id for the user
+    email: Users username
+    password: Users password
+    profile_picture: Will store a users profile picture
+    skills: Points to the SkillsModel class and loads multiple of those
+    classes: Points to the SkillsModel class and loads multiple of those
+
+
+    Methods
+    -------
+    __init__(email, password, github, linkedin, profile_picture, skills, classes)
+        Initializes an object of class UserModel. This object will have access to all of its methods
+    json()
+        Will turn all of UserModels attributes and convert them to json format.
+    save_to_db()
+        Uses the current session to create a new user in the users table in the db.
+    delete_from_db()
+        Uses the current session to delete a user from the users table in the db.
+
+    """
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key="True")
+    email = db.Column(db.String(40))
+    password = db.Column(db.String(40))
+    github = db.Column(db.String(40))
+    linkedin = db.Column(db.String(40))
+    profile_picture = None
+
+    # One to Many Relationships
+    skills = db.relationship('SkillsModel', backref='user', lazy='dynamic')
+    classes = db.relationship('ClassesModel', lazy='dynamic')
+
+    def __init__(self, email, password, github, linkedin, profile_picture, skills, classes):
+        self.email = email
+        self.password = password
+        self.github = github
+        self.linkedin = linkedin
+        self.profile_picture = profile_picture
+        self.skills = skills
+        self.classes = classes
+
+    def json(self):
+        return {
+            'email': self.email,
+            'github': self.github,
+            'linkedin': self.linkedin,
+            'profile_picture': self.profile_picture,
+            'skills': [skill.json() for skill in self.skills.all()],  # Uses list comprehension to retrieve items
+            'classes': [course.json() for course in self.classes.all()]  # Uses list comprehension to retrieve classes
+
+        }
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit(self)
+
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit(self)
+
+    @classmethod
+    def find_by_email(cls, email):
+        return cls.query.filter_by(email=email).first()
+
+    @classmethod
+    def find_by_id(cls, _id):
+        return cls.query.filter_by(id=_id).first()
+
+    @classmethod
+    def find_all(cls):
+        return cls.query.all()

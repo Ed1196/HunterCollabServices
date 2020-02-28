@@ -10,6 +10,7 @@ app = Flask(__name__)
 api = Api(app)
 
 
+
 class HelloWorld(Resource):
     def get(self):
         return {'hello': 'world'}
@@ -19,4 +20,5 @@ class HelloWorld(Resource):
 api.add_resource(HelloWorld, '/')
 
 if __name__ == '__main__':
+    from db import db
     app.run(debug=True)
