@@ -5,7 +5,8 @@ from models.skills import SkillsModel
 
 class UserModel(db.Model):
     """
-    A class used to represent a user model
+    A class used to represent an internal representation of a User entity. The UserModel will be a helper file
+    that will aid the programmer in development of the API.
 
     Args
     ----

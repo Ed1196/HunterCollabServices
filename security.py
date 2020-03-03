@@ -2,8 +2,11 @@ from werkzeug.security import safe_str_cmp
 
 
 # Auth using username and password. Will be triggered by /auth
-def authentica(username, password):
-    user = User.findUserByName(username)
+from models.users import UserModel
+
+
+def authentica(email, password):
+    user = UserModel.findUserByEmail(email)
     if user and safe_str_cmp(password,user.password):
         return user
 
