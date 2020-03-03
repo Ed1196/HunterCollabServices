@@ -12,9 +12,7 @@ class SkillsModel(db.Model):
         Attributes
         ----------
         __tablename__: Name of the table in the database.
-        skills_name: Name of a skill that a user has. Example Angular, Python, SQl , etc.
-        user_id: Associates the SkillsModel class to the UsersModel class via the backref declared in the
-                    UsersModel class. We can access the users that have this skill in their array.
+        name: Name of a skill that a user has. Example Angular, Python, SQl , etc.
 
         Methods
         -------
@@ -22,7 +20,17 @@ class SkillsModel(db.Model):
     """
     __tablename__ = 'skills'
     id = db.Column(db.Integer, primary_key="True")
-    skills_name = db.Column(db.String(40))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String(40))
+
+    def __init__(self, skillName):
+        self.name = skillName
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def find_by_name(cls, name):
+        return cls.query.filter_by(name=name).first()
 
 

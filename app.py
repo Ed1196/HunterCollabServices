@@ -8,6 +8,7 @@ from flask import Flask
 from flask_restful import Resource, Api
 from flask_jwt_extended import JWTManager
 from resources.users import UserRegister, UserLogin
+from resources.collaborations import Collaboration
 
 app = Flask(__name__)
 api = Api(app)
@@ -35,6 +36,8 @@ class HelloWorld(Resource):
 api.add_resource(HelloWorld, '/')
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserLogin, '/login')
+api.add_resource(Collaboration, '/collab')
+
 
 if __name__ == '__main__':
     from db import db

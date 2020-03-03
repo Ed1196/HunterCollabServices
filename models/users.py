@@ -20,7 +20,7 @@ class UserModel(db.Model):
     email: Users username
     password: Users password
     profile_picture: Will store a users profile picture
-    skills: Points to the SkillsModel class and loads multiple of those
+    skills: Points to the SkillsModel class and loads multiple of those.
     classes: Points to the SkillsModel class and loads multiple of those
 
 
@@ -29,33 +29,34 @@ class UserModel(db.Model):
     __init__(email, password, github, linkedin, profile_picture, skills, classes)
         Initializes an object of class UserModel. This object will have access to all of its methods
     json()
-        Will turn all of UserModels attributes and convert them to json format.
+        Will turn all of UserModel attributes and convert them to json format.
     save_to_db()
         Uses the current session to create a new user in the users table in the db.
     delete_from_db()
         Uses the current session to delete a user from the users table in the db.
     find_my_email()
-        Uses a users email to make a query that will try to find a user with that email
+        Helper method that uses a users email to make a query that will try to find a user with that email.
 
     """
+
+    # Object properties that will be turned into valid sql queries by SQLAlchemy.
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key="True")
     email = db.Column(db.String(40))
     password = db.Column(db.String(40))
     github = db.Column(db.String(40))
     linkedin = db.Column(db.String(40))
-    profile_picture = None
+    profilePicture = None
 
-    # One to Many Relationships
-    skills = db.relationship('SkillsModel', lazy='dynamic')
-    classes = db.relationship('ClassesModel', lazy='dynamic')
+    # Relationships
 
-    def __init__(self, email, password, github='', linkedin='', profile_picture='', skills=[], classes=[]):
+
+    def __init__(self, email, password, github='', linkedin='', profilePicture='', skills=[], classes=[]):
         self.email = email
         self.password = password
         self.github = github
         self.linkedin = linkedin
-        self.profile_picture = profile_picture
+        self.profilePicture = profilePicture
         self.skills = skills
         self.classes = classes
 
@@ -65,7 +66,7 @@ class UserModel(db.Model):
             'email': self.email,
             'github': self.github,
             'linkedin': self.linkedin,
-            'profile_picture': self.profile_picture,
+            'profile_picture': self.profilePicture,
             'skills': [skill.json() for skill in self.skills.all()],  # Uses list comprehension to retrieve items
             'classes': [course.json() for course in self.classes.all()]  # Uses list comprehension to retrieve classes
 
