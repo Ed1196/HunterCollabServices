@@ -33,6 +33,8 @@ class UserModel(db.Model):
         Uses the current session to create a new user in the users table in the db.
     delete_from_db()
         Uses the current session to delete a user from the users table in the db.
+    find_my_email()
+        Uses a users email to make a query that will try to find a user with that email
 
     """
     __tablename__ = 'users'
@@ -44,10 +46,10 @@ class UserModel(db.Model):
     profile_picture = None
 
     # One to Many Relationships
-    skills = db.relationship('SkillsModel', backref='user', lazy='dynamic')
+    skills = db.relationship('SkillsModel', lazy='dynamic')
     classes = db.relationship('ClassesModel', lazy='dynamic')
 
-    def __init__(self, email, password, github, linkedin, profile_picture, skills, classes):
+    def __init__(self, email, password, github='', linkedin='', profile_picture='', skills=[], classes=[]):
         self.email = email
         self.password = password
         self.github = github
@@ -55,6 +57,7 @@ class UserModel(db.Model):
         self.profile_picture = profile_picture
         self.skills = skills
         self.classes = classes
+
 
     def json(self):
         return {
@@ -69,11 +72,11 @@ class UserModel(db.Model):
 
     def save_to_db(self):
         db.session.add(self)
-        db.session.commit(self)
+        db.session.commit()
 
     def delete_from_db(self):
         db.session.delete(self)
-        db.session.commit(self)
+        db.session.commit()
 
     @classmethod
     def find_by_email(cls, email):
