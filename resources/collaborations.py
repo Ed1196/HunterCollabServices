@@ -29,10 +29,13 @@ class Collaboration(Resource):
         data = request.get_json()
 
         collab = CollabModel(**data)
+        collab.save_to_db()
+        CollabModel.add_skills_to_list(collab)
+        CollabModel.add_classes_to_list(collab)
+        CollabModel.add_member_to_list(collab)
         try:
-            collab.save_to_db()
-            CollabModel.add_to_skills_to_list(collab)
+            pass
         except:
-            return {'message': 'An error occured while creating the store.'}, 500
+            return {'success': False, 'message': 'An error occured while creating the collaboration!.'}, 500
 
-        return collab.json()
+        return {'success': True, 'collab': collab.json()}

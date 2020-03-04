@@ -50,7 +50,6 @@ class UserModel(db.Model):
 
     # Relationships
 
-
     def __init__(self, email, password, github='', linkedin='', profilePicture='', skills=[], classes=[]):
         self.email = email
         self.password = password
@@ -59,7 +58,6 @@ class UserModel(db.Model):
         self.profilePicture = profilePicture
         self.skills = skills
         self.classes = classes
-
 
     def json(self):
         return {

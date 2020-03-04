@@ -4,12 +4,22 @@ from models.skills import SkillsModel
 from models.classes import ClassesModel
 
 """
-Association table that will be the connector in a Many-to-Many relationship between two tables(collaborations,skills).
-Will associate skills requied for a collab to the collabs that have specified them. 
+Association tables that will be the connector in a Many-to-Many relationship between two tables.
+    skills: Will associate skills required for a collab to the collabs that have specified them.
+    classes: Will associate classes required for a collab to the collabs that have specified them.
+    members: Will associate members required for a collab to the collabs that the user has joined 
 """
 skills = db.Table('collab_skills',
                   db.Column('collab_id', db.Integer, db.ForeignKey('collaborations.id')),
                   db.Column('skill_id', db.Integer, db.ForeignKey('skills.id')))
+
+classes = db.Table('collab_classes',
+                   db.Column('collab_id', db.Integer, db.ForeignKey('collaborations.id')),
+                   db.Column('class_id', db.Integer, db.ForeignKey('classes.id')))
+
+members = db.Table('collab_members',
+                   db.Column('collab_id', db.Integer, db.ForeignKey('collaborations.id')),
+                   db.Column('member_id', db.Integer, db.ForeignKey('users.id')))
 
 
 class CollabModel(db.Model):
@@ -32,7 +42,7 @@ class CollabModel(db.Model):
     status: Will determine if a collab is active or not
     title: Title of a collab
     description: Collaboration description
-    skillsList: Will help update the association table
+    skillsList: Will help update the association table between collab and skills or classes.
 
     Methods
     -------
@@ -57,8 +67,10 @@ class CollabModel(db.Model):
     status = db.Column(db.Boolean, default=False, server_default="false")
     title = db.Column(db.String(30))
     description = db.Column(db.String(256))
-    # Third attribute that will update the association table
+    # Third attribute, in the table we want to connect this table to, that will update the association table
     skillsList = db.relationship('SkillsModel', secondary=skills, backref=db.backref('collabs', lazy='dynamic'))
+    classesList = db.relationship('ClassesModel', secondary=classes, backref=db.backref('collabs', lazy='dynamic'))
+    membersList = db.relationship('UserModel', secondary=members, backref=db.backref('collabs'), lazy='dynamic')
 
     def __init__(self,
                  owner,
@@ -69,9 +81,9 @@ class CollabModel(db.Model):
                  status,
                  title,
                  description,
-                 classes,
-                 skills,
-                 members):
+                 classesList,
+                 skillsList,
+                 membersList):
         self.owner = owner
         self.size = size
         self.date = date
@@ -80,7 +92,9 @@ class CollabModel(db.Model):
         self.status = status
         self.title = title
         self.description = description
-        self.skills = skills
+        self.skills = skillsList
+        self.classes = classesList
+        self.members = membersList
 
     def json(self):
         return {
@@ -92,15 +106,31 @@ class CollabModel(db.Model):
             "status": self.status,
             "title": self.title,
             "description": self.description,
-            "skills": [skill.name for skill in self.skillsList]
+            "skills": [skill.name for skill in self.skillsList],
+            "classes": [course.name for course in self.classesList],
+            "members": [member.email for member in self.membersList]
         }
 
     @classmethod
-    def add_to_skills_to_list(cls, collab):
+    def add_skills_to_list(cls, collab):
         for skillName in collab.skills:
             skill = SkillsModel(skillName)
             skill.save_to_db()
             skill.collabs.append(collab)
+
+
+    @classmethod
+    def add_classes_to_list(cls, collab):
+        for className in collab.classes:
+            course = ClassesModel(className)
+            course.save_to_db()
+            course.collabs.append(collab)
+
+    @classmethod
+    def add_member_to_list(cls, collab):
+        for memberName in collab.members:
+            user = UserModel.find_by_email(memberName)
+            user.collabs.append(collab)
 
     def save_to_db(self):
         db.session.add(self)
