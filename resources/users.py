@@ -24,7 +24,7 @@ class UserRegister(Resource):
         Methods
         -------
         post(): Method that handles the response that will be created when a user sends a request to the API.
-                Handles post request to the endpoint associated with UserRegister
+                Handles post request to the endpoint associated with UserRegister. Will register a user.
 
         """
     _user_parser = reqparse.RequestParser()
