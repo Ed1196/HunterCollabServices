@@ -25,6 +25,7 @@ class Collaboration(Resource):
 
     _collab_parser = reqparse.RequestParser()
 
+    @jwt_required
     def post(self):
         data = request.get_json()
 

@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Tracks modification of o
 app.config['PROPAGATE_EXCEPTIONS'] = True  # Raises FLASK-JWT errors.
 app.secret_key = 'Edwin'
 
-jwt = JWTManager(app)
+jwt = JWTManager(app)  # Creates an object to hold JWT settings and callback funcs. No longer creates an /auth endpoint.
 
 
 # Use to create local database.
@@ -37,7 +37,6 @@ api.add_resource(HelloWorld, '/')
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserLogin, '/login')
 api.add_resource(Collaboration, '/collab')
-
 
 if __name__ == '__main__':
     from db import db

@@ -111,6 +111,10 @@ class CollabModel(db.Model):
             "members": [member.email for member in self.membersList]
         }
 
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
     @classmethod
     def add_skills_to_list(cls, collab):
         for skillName in collab.skills:
@@ -132,6 +136,6 @@ class CollabModel(db.Model):
             user = UserModel.find_by_email(memberName)
             user.collabs.append(collab)
 
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
+    @classmethod
+    def find_all(cls):
+        return cls.query.all()
