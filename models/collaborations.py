@@ -1,7 +1,11 @@
+from typing import Dict, List, Union
 from db import db
-from models.users import UserModel
-from models.skills import SkillsModel
-from models.classes import ClassesModel
+from models.users import UserModel, UserJSON
+from models.skills import SkillsModel, SkillsJSON
+from models.classes import ClassesModel, ClassesJSON
+
+# Custom(custom JSON) return type, will help with type hinting
+CollabJSON = Dict[str, Union[int, str, int, int, int, str, bool, str, str, List, List, List]]
 
 """
 Association tables that will be the connector in a Many-to-Many relationship between two tables.
@@ -89,17 +93,17 @@ class CollabModel(db.Model):
                                   backref=db.backref('collabs'), lazy='joined')
 
     def __init__(self,
-                 owner,
-                 size,
-                 date,
-                 duration,
-                 location,
-                 status,
-                 title,
-                 description,
-                 classes,
-                 skills,
-                 members):
+                 owner: str,
+                 size: int,
+                 date: int,
+                 duration: int,
+                 location: str,
+                 status: bool,
+                 title: str,
+                 description: str,
+                 classes: List,
+                 skills: List,
+                 members: List):
         self.owner = owner
         self.size = size
         self.date = date
@@ -112,7 +116,7 @@ class CollabModel(db.Model):
         self.classes = classes
         self.members = members
 
-    def json(self):
+    def json(self) -> CollabJSON:
         return {
             "id": self.id,
             "owner": self.owner,
@@ -128,15 +132,15 @@ class CollabModel(db.Model):
             "members": [member.email for member in self.membersList],
         }
 
-    def save_to_db(self):
+    def save_to_db(self) -> None:
         db.session.add(self)
         db.session.commit()
 
-    def delete_from_db(self):
+    def delete_from_db(self) -> None:
         db.session.delete(self)
         db.session.commit()
 
-    def update_data(self, data):
+    def update_data(self, data) -> None:
         self.size = data['size']
         self.date = data['date']
         self.duration = data['duration']
@@ -148,7 +152,7 @@ class CollabModel(db.Model):
         self.classes = data['classes']
 
     @classmethod
-    def add_skills_to_list(cls, collab):
+    def add_skills_to_list(cls, collab) -> None:
         for skillName in collab.skills:
             skill = SkillsModel(skillName)
             skill.save_to_db()
@@ -156,7 +160,7 @@ class CollabModel(db.Model):
             db.session.commit()
 
     @classmethod
-    def add_classes_to_list(cls, collab):
+    def add_classes_to_list(cls, collab) -> None:
         for className in collab.classes:
             course = ClassesModel(className)
             course.save_to_db()
@@ -164,21 +168,21 @@ class CollabModel(db.Model):
             db.session.commit()
 
     @classmethod
-    def add_member_to_list(cls, collab):
+    def add_member_to_list(cls, collab) -> None:
         for memberName in collab.members:
             user = UserModel.find_by_email(memberName)
             user.collabs.append(collab)
             db.session.commit()
 
     @classmethod
-    def find_all(cls):
+    def find_all(cls) -> List["CollabModel"]:
         return cls.query.all()
 
     @classmethod
-    def find_user_collabs(cls, user_id):
+    def find_user_collabs(cls, user_id: int) -> List["CollabModel"]:
         user = UserModel.find_by_id(user_id)
         return cls.query.filter_by(owner=user.email).all()
 
     @classmethod
-    def find_by_id(cls, _id):
+    def find_by_id(cls, _id: int) -> "CollabModel":
         return cls.query.filter_by(id=_id).first()

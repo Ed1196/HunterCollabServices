@@ -7,6 +7,7 @@ from flask_jwt_extended import (
     jwt_required,
     fresh_jwt_required)
 
+
 class UserRegister(Resource):
     """
         A class used to represent an external representation of a User entity that deals with register.
@@ -40,13 +41,14 @@ class UserRegister(Resource):
     def post(self):
         data = UserRegister._user_parser.parse_args()
 
-        if(UserModel.find_by_email(data['email'])):
+        if UserModel.find_by_email(data['email']):
             return {'message': 'Email already used!'}
 
         user = UserModel(**data)
         user.save_to_db()
 
         return {'message': 'User created succesfully!'}, 201
+
 
 class UserLogin(Resource):
     _user_parser = reqparse.RequestParser()
@@ -67,8 +69,7 @@ class UserLogin(Resource):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             return {
-                'access_token': access_token,
-                'refresh_token': refresh_token
-            }, 200
+                       'access_token': access_token,
+                       'refresh_token': refresh_token
+                   }, 200
         return {'message': 'Invalid Credentials'}, 401
-

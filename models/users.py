@@ -1,6 +1,10 @@
+from typing import Dict, List, Union
 from db import db
-from models.classes import ClassesModel
-from models.skills import SkillsModel
+from models.classes import ClassesModel, ClassesJSON
+from models.skills import SkillsModel, SkillsJSON
+
+# Costume(custom JSON) return type, will help in type hinting
+UserJSON = Dict[str, Union[str, str, str, str, List[SkillsJSON], List[ClassesJSON]]]
 
 
 class UserModel(db.Model):
@@ -48,9 +52,14 @@ class UserModel(db.Model):
     linkedin = db.Column(db.String(40))
     profilePicture = None
 
-    # Relationships
-
-    def __init__(self, email, password, github='', linkedin='', profilePicture='', skills=[], classes=[]):
+    def __init__(self,
+                 email: str,
+                 password: str,
+                 github: str = '',
+                 linkedin: str = '',
+                 profilePicture='',
+                 skills: List = [],
+                 classes: List = []):
         self.email = email
         self.password = password
         self.github = github
@@ -59,7 +68,7 @@ class UserModel(db.Model):
         self.skills = skills
         self.classes = classes
 
-    def json(self):
+    def json(self) -> UserJSON:
         return {
             'email': self.email,
             'github': self.github,
@@ -70,22 +79,22 @@ class UserModel(db.Model):
 
         }
 
-    def save_to_db(self):
+    def save_to_db(self) -> None:
         db.session.add(self)
         db.session.commit()
 
-    def delete_from_db(self):
+    def delete_from_db(self) -> None:
         db.session.delete(self)
         db.session.commit()
 
     @classmethod
-    def find_by_email(cls, email):
+    def find_by_email(cls, email: str) -> "UserModel":
         return cls.query.filter_by(email=email).first()
 
     @classmethod
-    def find_by_id(cls, _id):
+    def find_by_id(cls, _id: int) -> "UserModel":
         return cls.query.filter_by(id=_id).first()
 
     @classmethod
-    def find_all(cls):
+    def find_all(cls) -> List["UserModel"]:
         return cls.query.all()
