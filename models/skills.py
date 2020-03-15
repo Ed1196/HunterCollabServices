@@ -20,7 +20,7 @@ class SkillsModel(db.Model):
     """
     __tablename__ = 'skills'
     id = db.Column(db.Integer, primary_key="True")
-    name = db.Column(db.String(40))
+    name = db.Column(db.String(40), unique=True)
 
     def __init__(self, skillName):
         self.name = skillName

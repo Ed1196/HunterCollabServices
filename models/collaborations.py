@@ -132,6 +132,21 @@ class CollabModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update_data(self, data):
+        self.size = data['size']
+        self.date = data['date']
+        self.duration = data['duration']
+        self.location = data['location']
+        self.status = data['status']
+        self.title = data['title']
+        self.description = data['description']
+        self.skills = data['skills']
+        self.classes = data['classes']
+
     @classmethod
     def add_skills_to_list(cls, collab):
         for skillName in collab.skills:
@@ -158,3 +173,12 @@ class CollabModel(db.Model):
     @classmethod
     def find_all(cls):
         return cls.query.all()
+
+    @classmethod
+    def find_user_collabs(cls, user_id):
+        user = UserModel.find_by_id(user_id)
+        return cls.query.filter_by(owner=user.email).all()
+
+    @classmethod
+    def find_by_id(cls, _id):
+        return cls.query.filter_by(id=_id).first()

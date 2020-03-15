@@ -3,10 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="e30bf637-0234-46e2-ae9f-c436aeae506c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data.db" beforeDir="false" afterPath="$PROJECT_DIR$/data.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/classes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/collaborations.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/collaborations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/skills.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/skills.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/users.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/collaborations.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources/collaborations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources/users.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +67,7 @@
       <option name="presentableId" value="Default" />
       <updated>1582410820857</updated>
       <workItem from="1582410823923" duration="1037000" />
-      <workItem from="1582412399922" duration="43457000" />
+      <workItem from="1582412399922" duration="53045000" />
     </task>
     <servers />
   </component>
@@ -79,6 +82,10 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="428" y="260" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1583267604509" />
+    <state x="276" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1583392240386">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="276" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1440.900@0.0.1440.900" timestamp="1583392240386" />
     <state x="507" y="212" key="FileChooserDialogImpl" timestamp="1582411885124">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
@@ -87,9 +94,9 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="399" y="282" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1582410835049" />
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1583342309100">
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1583392292805">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1583342309100" />
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1583392292805" />
   </component>
 </project>

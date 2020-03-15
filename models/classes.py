@@ -4,7 +4,7 @@ from db import db
 class ClassesModel(db.Model):
     __tablename__ = 'classes'
     id = db.Column(db.Integer, primary_key="True")
-    name = db.Column(db.String(40))
+    name = db.Column(db.String(40), unique=True)
 
     def __init__(self, className):
         self.name = className
