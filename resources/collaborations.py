@@ -3,6 +3,9 @@ from flask import request
 from flask_jwt_extended import jwt_required, fresh_jwt_required, get_jwt_identity
 from models.collaborations import CollabModel
 
+RETRIEVAL_ERROR = "Error retrieving collaborations."
+DELETE_SUCCESSFUL = "Collab successfully deleted!"
+
 
 class UserCollabs(Resource):
     """
@@ -47,13 +50,23 @@ class UserCollabs(Resource):
         collab = CollabModel(**data)
         try:
             collab.save_to_db()  # creates collab in table
-            CollabModel.add_skills_to_list(collab)  # sets up association to skills table
-            CollabModel.add_classes_to_list(collab)  # sets up association to classes table
+            CollabModel.add_skills_to_list(
+                collab
+            )  # sets up association to skills table
+            CollabModel.add_classes_to_list(
+                collab
+            )  # sets up association to classes table
             CollabModel.add_member_to_list(collab)  # sets up association to users table
         except:
-            return {'success': False, 'message': 'An error occured while creating the collaboration!.'}, 500
+            return (
+                {
+                    "success": False,
+                    "message": "An error occured while creating the collaboration!.",
+                },
+                500,
+            )
 
-        return {'success': True, 'collab': collab.json()}
+        return {"success": True, "collab": collab.json()}
 
     @jwt_required
     def get(self, _id):
@@ -67,11 +80,13 @@ class UserCollabs(Resource):
         if _id != "None":
             collabs = (CollabModel.find_by_id(int(_id))).json()
         else:
-            collabs = [collab.json() for collab in CollabModel.find_user_collabs(user_id)]
+            collabs = [
+                collab.json() for collab in CollabModel.find_user_collabs(user_id)
+            ]
 
         if collabs is not None:
-            return {'success': True, 'collabs': collabs}, 200
-        return {'success': False, 'message': 'Error retrieving collaborations.'}
+            return {"success": True, "collabs": collabs}, 200
+        return {"success": False, "message": RETRIEVAL_ERROR}
 
     @jwt_required
     def put(self, _id):
@@ -80,8 +95,8 @@ class UserCollabs(Resource):
         if collab is not None:
             collab.update_data(data)
             collab.save_to_db()
-            return {'success': True, 'collab': collab.json()}, 200
-        return {'success': False, 'message': 'Error retrieving collaboration.'}
+            return {"success": True, "collab": collab.json()}, 200
+        return {"success": False, "message": RETRIEVAL_ERROR}
 
     @jwt_required
     def delete(self, _id):
@@ -89,13 +104,12 @@ class UserCollabs(Resource):
         if collab is not None:
             # item calls its delete function to delete itself
             collab.delete_from_db()
-            return {'succes': True, 'message': 'Collab succesfully deleted!'}, 200
+            return {"success": True, "message": DELETE_SUCCESSFUL}, 200
 
-        return {'succes': False, 'message': 'Item was not found!'}
+        return {"success": False, "message": RETRIEVAL_ERROR}
 
 
 class AllCollabs(Resource):
-
     @jwt_required
     def get(self):
         """Handles get request to the endpoint associated with Collaboration. Will retrieve all collaboration.
@@ -104,5 +118,5 @@ class AllCollabs(Resource):
         """
         collabs = [collab.json() for collab in CollabModel.find_all()]
         if collabs is not None:
-            return {'success': True, 'collabs': collabs}, 200
-        return {'success': False, 'message': 'Error retrieving collaborations.'}
+            return {"success": True, "collabs": collabs}, 200
+        return {"success": False, "message": RETRIEVAL_ERROR}

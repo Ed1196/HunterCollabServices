@@ -5,12 +5,13 @@ from werkzeug.security import safe_str_cmp
 from models.users import UserModel
 
 
-def authentica(email, password):
+def authenticate(email, password):
     user = UserModel.findUserByEmail(email)
-    if user and safe_str_cmp(password,user.password):
+    if user and safe_str_cmp(password, user.password):
         return user
+
 
 # Retrieves User ID from JWT and uses that id to find that user in the DB
 def identity(payload):
-    user_id = payload['identity']
+    user_id = payload["identity"]
     return UserModel.findById(user_id)

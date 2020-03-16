@@ -5,7 +5,13 @@ from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     jwt_required,
-    fresh_jwt_required)
+    fresh_jwt_required,
+    jwt_refresh_token_required,
+    get_jwt_identity
+)
+
+BLANK_ERROR = "{} cannot be left blank!"
+CREDENTIAL_ERROR = "Invalid Credentials."
 
 
 class UserRegister(Resource):
@@ -28,48 +34,54 @@ class UserRegister(Resource):
                 Handles post request to the endpoint associated with UserRegister. Will register a user.
 
         """
+
     _user_parser = reqparse.RequestParser()
-    _user_parser.add_argument('email',
-                              type=str,
-                              required=True,
-                              help='This field cannot be left blank!')
-    _user_parser.add_argument('password',
-                              type=str,
-                              required=True,
-                              help='This field cannot be left blank!')
+    _user_parser.add_argument(
+        "email", type=str, required=True, help=BLANK_ERROR.format("email")
+    )
+    _user_parser.add_argument(
+        "password", type=str, required=True, help=BLANK_ERROR.format("password")
+    )
 
     def post(self):
         data = UserRegister._user_parser.parse_args()
 
-        if UserModel.find_by_email(data['email']):
-            return {'message': 'Email already used!'}
+        if UserModel.find_by_email(data["email"]):
+            return {"message": "Email already used!"}
 
         user = UserModel(**data)
         user.save_to_db()
 
-        return {'message': 'User created succesfully!'}, 201
+        return {"message": "User created succesfully!"}, 201
 
 
 class UserLogin(Resource):
     _user_parser = reqparse.RequestParser()
-    _user_parser.add_argument('email',
-                              type=str,
-                              required=True,
-                              help='This field cannot be left blank!')
-    _user_parser.add_argument('password',
-                              type=str,
-                              required=True,
-                              help='This field cannot be left blank!')
+    _user_parser.add_argument(
+        "email", type=str, required=True, help=BLANK_ERROR.format("email")
+    )
+    _user_parser.add_argument(
+        "password", type=str, required=True, help=BLANK_ERROR.format("password")
+    )
 
     @classmethod
-    def post(self):
+    def post(cls):
         data = UserLogin._user_parser.parse_args()
-        user = UserModel.find_by_email(data['email'])
-        if user and safe_str_cmp(user.password, data['password']):
+        user = UserModel.find_by_email(data["email"])
+        if user and safe_str_cmp(user.password, data["password"]):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
-            return {
-                       'access_token': access_token,
-                       'refresh_token': refresh_token
-                   }, 200
-        return {'message': 'Invalid Credentials'}, 401
+            return {"access_token": access_token, "refresh_token": refresh_token}, 200
+        return {"message": CREDENTIAL_ERROR}, 401
+
+
+class RefreshToken(Resource):
+    @classmethod
+    @jwt_refresh_token_required
+    def get(cls):
+        current_user = get_jwt_identity()
+        new_token = create_access_token(identity=current_user, fresh=False)
+        return {'access_token': new_token}, 200
+
+
+

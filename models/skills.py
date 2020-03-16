@@ -3,7 +3,7 @@ from db import db
 
 
 # Custom(custom JSON) return type, will help with type hinting.
-SkillsJSON = Dict[str, Union[int,str]]
+SkillsJSON = Dict[str, Union[int, str]]
 
 
 class SkillsModel(db.Model):
@@ -23,7 +23,8 @@ class SkillsModel(db.Model):
         -------
 
     """
-    __tablename__ = 'skills'
+
+    __tablename__ = "skills"
     id = db.Column(db.Integer, primary_key="True")
     name = db.Column(db.String(40), unique=True)
 
@@ -31,11 +32,7 @@ class SkillsModel(db.Model):
         self.name = skillName
 
     def json(self):
-        return {
-            'id': self.id,
-            'name': self.name
-        }
-
+        return {"id": self.id, "name": self.name}
 
     def save_to_db(self) -> None:
         db.session.add(self)
@@ -44,5 +41,3 @@ class SkillsModel(db.Model):
     @classmethod
     def find_by_name(cls, name: str) -> "SkillsModel":
         return cls.query.filter_by(name=name).first()
-
-

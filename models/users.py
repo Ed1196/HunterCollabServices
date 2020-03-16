@@ -44,7 +44,7 @@ class UserModel(db.Model):
     """
 
     # Object properties that will be turned into valid sql queries by SQLAlchemy.
-    __tablename__ = 'users'
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key="True")
     email = db.Column(db.String(40), unique=True)
     password = db.Column(db.String(40))
@@ -52,14 +52,16 @@ class UserModel(db.Model):
     linkedin = db.Column(db.String(40))
     profilePicture = None
 
-    def __init__(self,
-                 email: str,
-                 password: str,
-                 github: str = '',
-                 linkedin: str = '',
-                 profilePicture='',
-                 skills: List = [],
-                 classes: List = []):
+    def __init__(
+        self,
+        email: str,
+        password: str,
+        github: str = "",
+        linkedin: str = "",
+        profilePicture="",
+        skills: List = [],
+        classes: List = [],
+    ):
         self.email = email
         self.password = password
         self.github = github
@@ -70,13 +72,16 @@ class UserModel(db.Model):
 
     def json(self) -> UserJSON:
         return {
-            'email': self.email,
-            'github': self.github,
-            'linkedin': self.linkedin,
-            'profile_picture': self.profilePicture,
-            'skills': [skill.json() for skill in self.skills.all()],  # Uses list comprehension to retrieve items
-            'classes': [course.json() for course in self.classes.all()]  # Uses list comprehension to retrieve classes
-
+            "email": self.email,
+            "github": self.github,
+            "linkedin": self.linkedin,
+            "profile_picture": self.profilePicture,
+            "skills": [
+                skill.json() for skill in self.skills.all()
+            ],  # Uses list comprehension to retrieve items
+            "classes": [
+                course.json() for course in self.classes.all()
+            ],  # Uses list comprehension to retrieve classes
         }
 
     def save_to_db(self) -> None:

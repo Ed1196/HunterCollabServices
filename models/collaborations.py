@@ -5,7 +5,9 @@ from models.skills import SkillsModel, SkillsJSON
 from models.classes import ClassesModel, ClassesJSON
 
 # Custom(custom JSON) return type, will help with type hinting
-CollabJSON = Dict[str, Union[int, str, int, int, int, str, bool, str, str, List, List, List]]
+CollabJSON = Dict[
+    str, Union[int, str, int, int, int, str, bool, str, str, List, List, List]
+]
 
 """
 Association tables that will be the connector in a Many-to-Many relationship between two tables.
@@ -13,17 +15,23 @@ Association tables that will be the connector in a Many-to-Many relationship bet
     classes: Will associate classes required for a collab to the collabs that have specified them.
     members: Will associate members required for a collab to the collabs that the user has joined 
 """
-skills_association = db.Table('collab_skills',
-                              db.Column('collab_id', db.Integer, db.ForeignKey('collaborations.id')),
-                              db.Column('skill_id', db.Integer, db.ForeignKey('skills.id')))
+skills_association = db.Table(
+    "collab_skills",
+    db.Column("collab_id", db.Integer, db.ForeignKey("collaborations.id")),
+    db.Column("skill_id", db.Integer, db.ForeignKey("skills.id")),
+)
 
-classes_association = db.Table('collab_classes',
-                               db.Column('collab_id', db.Integer, db.ForeignKey('collaborations.id')),
-                               db.Column('class_id', db.Integer, db.ForeignKey('classes.id')))
+classes_association = db.Table(
+    "collab_classes",
+    db.Column("collab_id", db.Integer, db.ForeignKey("collaborations.id")),
+    db.Column("class_id", db.Integer, db.ForeignKey("classes.id")),
+)
 
-members_association = db.Table('collab_members',
-                               db.Column('collab_id', db.Integer, db.ForeignKey('collaborations.id')),
-                               db.Column('member_id', db.Integer, db.ForeignKey('users.id')))
+members_association = db.Table(
+    "collab_members",
+    db.Column("collab_id", db.Integer, db.ForeignKey("collaborations.id")),
+    db.Column("member_id", db.Integer, db.ForeignKey("users.id")),
+)
 
 
 class CollabModel(db.Model):
@@ -71,7 +79,8 @@ class CollabModel(db.Model):
         Queries for all the collabs
 
     """
-    __tablename__ = 'collaborations'
+
+    __tablename__ = "collaborations"
     id = db.Column(db.Integer, primary_key=True)
     owner = db.Column(db.String(30))
     size = db.Column(db.Integer)
@@ -82,28 +91,37 @@ class CollabModel(db.Model):
     title = db.Column(db.String(30))
     description = db.Column(db.String(256))
     # Third attribute, in the table we want to connect this table to, that will update the association table
-    skillsList = db.relationship('SkillsModel',
-                                 secondary=skills_association,
-                                 backref=db.backref('collabs', lazy='joined'))
-    classesList = db.relationship('ClassesModel',
-                                  secondary=classes_association,
-                                  backref=db.backref('collabs', lazy='joined'))
-    membersList = db.relationship('UserModel',
-                                  secondary=members_association,
-                                  backref=db.backref('collabs'), lazy='joined')
+    skillsList = db.relationship(
+        "SkillsModel",
+        secondary=skills_association,
+        backref=db.backref("collabs", lazy="joined"),
+    )
+    classesList = db.relationship(
+        "ClassesModel",
+        secondary=classes_association,
+        backref=db.backref("collabs", lazy="joined"),
+    )
+    membersList = db.relationship(
+        "UserModel",
+        secondary=members_association,
+        backref=db.backref("collabs"),
+        lazy="joined",
+    )
 
-    def __init__(self,
-                 owner: str,
-                 size: int,
-                 date: int,
-                 duration: int,
-                 location: str,
-                 status: bool,
-                 title: str,
-                 description: str,
-                 classes: List,
-                 skills: List,
-                 members: List):
+    def __init__(
+        self,
+        owner: str,
+        size: int,
+        date: int,
+        duration: int,
+        location: str,
+        status: bool,
+        title: str,
+        description: str,
+        classes: List,
+        skills: List,
+        members: List,
+    ):
         self.owner = owner
         self.size = size
         self.date = date
@@ -141,15 +159,15 @@ class CollabModel(db.Model):
         db.session.commit()
 
     def update_data(self, data) -> None:
-        self.size = data['size']
-        self.date = data['date']
-        self.duration = data['duration']
-        self.location = data['location']
-        self.status = data['status']
-        self.title = data['title']
-        self.description = data['description']
-        self.skills = data['skills']
-        self.classes = data['classes']
+        self.size = data["size"]
+        self.date = data["date"]
+        self.duration = data["duration"]
+        self.location = data["location"]
+        self.status = data["status"]
+        self.title = data["title"]
+        self.description = data["description"]
+        self.skills = data["skills"]
+        self.classes = data["classes"]
 
     @classmethod
     def add_skills_to_list(cls, collab) -> None:
