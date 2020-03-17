@@ -118,9 +118,9 @@ class CollabModel(db.Model):
         status: bool,
         title: str,
         description: str,
-        classes: List,
-        skills: List,
-        members: List,
+        classes: List = [],
+        skills: List = [],
+        members: List = [],
     ):
         self.owner = owner
         self.size = size

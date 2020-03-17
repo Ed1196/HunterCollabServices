@@ -2,9 +2,12 @@ from flask_restful import Resource, reqparse
 from flask import request
 from flask_jwt_extended import jwt_required, fresh_jwt_required, get_jwt_identity
 from models.collaborations import CollabModel
+from marshmallow import ValidationError
+from schemas.collaborations import CollabSchema
 
 RETRIEVAL_ERROR = "Error retrieving collaborations."
 DELETE_SUCCESSFUL = "Collab successfully deleted!"
+collab_schema = CollabSchema()
 
 
 class UserCollabs(Resource):
@@ -30,8 +33,6 @@ class UserCollabs(Resource):
         get(): Handles get request to the endpoint associated with Collaboration. Will retrieve all collaboration.
     """
 
-    _collab_parser = reqparse.RequestParser()
-
     @jwt_required
     def post(self, _id):
         """Handles post request to the endpoint associated with UserCollabs. Will create a collaboration.
@@ -45,9 +46,13 @@ class UserCollabs(Resource):
         :return: JSON with a success message. Also a collab in json format if success is true.
                  The JSON will contains collab details.
         """
-        data = request.get_json()
+        try:
+            data = collab_schema.load(request.get_json())
+        except ValidationError as err:
+            return err.messages, 400
 
         collab = CollabModel(**data)
+
         try:
             collab.save_to_db()  # creates collab in table
             CollabModel.add_skills_to_list(
