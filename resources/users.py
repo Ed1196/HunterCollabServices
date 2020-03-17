@@ -1,6 +1,9 @@
+from flask import request
 from flask_restful import Resource, reqparse
 from models.users import UserModel
+from schemas.users import UserSchema
 from werkzeug.security import safe_str_cmp
+from marshmallow import ValidationError
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -12,6 +15,8 @@ from flask_jwt_extended import (
 
 BLANK_ERROR = "{} cannot be left blank!"
 CREDENTIAL_ERROR = "Invalid Credentials."
+
+user_schema = UserSchema()
 
 
 class UserRegister(Resource):
@@ -35,16 +40,11 @@ class UserRegister(Resource):
 
         """
 
-    _user_parser = reqparse.RequestParser()
-    _user_parser.add_argument(
-        "email", type=str, required=True, help=BLANK_ERROR.format("email")
-    )
-    _user_parser.add_argument(
-        "password", type=str, required=True, help=BLANK_ERROR.format("password")
-    )
-
     def post(self):
-        data = UserRegister._user_parser.parse_args()
+        try:
+            data = user_schema.load(request.get_json())
+        except ValidationError as err:
+            return err.messages, 400
 
         if UserModel.find_by_email(data["email"]):
             return {"message": "Email already used!"}
@@ -56,17 +56,14 @@ class UserRegister(Resource):
 
 
 class UserLogin(Resource):
-    _user_parser = reqparse.RequestParser()
-    _user_parser.add_argument(
-        "email", type=str, required=True, help=BLANK_ERROR.format("email")
-    )
-    _user_parser.add_argument(
-        "password", type=str, required=True, help=BLANK_ERROR.format("password")
-    )
+
 
     @classmethod
     def post(cls):
-        data = UserLogin._user_parser.parse_args()
+        try:
+            data = user_schema.load(request.get_json())
+        except ValidationError as err:
+            return err.messages, 400
         user = UserModel.find_by_email(data["email"])
         if user and safe_str_cmp(user.password, data["password"]):
             access_token = create_access_token(identity=user.id, fresh=True)
