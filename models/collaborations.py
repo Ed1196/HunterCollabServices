@@ -245,6 +245,8 @@ class CollabModel(db.Model):
             thresholdForRating = collab.size/2
             collabRating = 0
             requiredMetCount = 0
+            # print(knownByUser)
+            # print(requiredDict)
             for key in requiredDict:
                 if requiredDict[key] <= thresholdForRating:
                     if knownByUser.get(key, False):
