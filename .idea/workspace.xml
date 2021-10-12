@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e30bf637-0234-46e2-ae9f-c436aeae506c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/uwsgi.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Procfile" beforeDir="false" afterPath="$PROJECT_DIR$/Procfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,7 +75,7 @@
       <workItem from="1587068957107" duration="23000" />
       <workItem from="1632969376231" duration="12637000" />
       <workItem from="1633476760036" duration="61094000" />
-      <workItem from="1633977566444" duration="21924000" />
+      <workItem from="1633977566444" duration="22895000" />
     </task>
     <servers />
   </component>
@@ -89,10 +90,10 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="320" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1634007761727" />
-    <state x="455" y="257" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1633577698356">
+    <state x="455" y="257" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1634082087255">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="455" y="257" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1633577698356" />
+    <state x="455" y="257" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1634082087255" />
     <state width="232" height="457" key="HiddenNamespacesPopup" timestamp="1634007774733">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
