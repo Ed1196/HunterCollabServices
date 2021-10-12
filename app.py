@@ -7,11 +7,17 @@ Necessary Modules
 from flask import Flask
 from flask_restful import Resource, Api
 from flask_jwt_extended import JWTManager
-from resources.users import UserRegister, UserLogin, RefreshToken
-from resources.collaborations import UserCollabs, AllCollabs
+from flask_cors import CORS
+from resources.users import User, UserSkills, UserClasses
+from resources.currentUsers import CurrentUser, CurrentUserUpdate
+from resources.auth import UserRegister, UserLogin, RefreshToken
+from resources.collaborations import UserCollab, UserCollabs, AllCollabs, CreateCollab, InteractCollab
+from resources.skills import Skills
+from resources.classes import Classes
 
 app = Flask(__name__)
 api = Api(app)
+CORS(app)
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"
@@ -40,11 +46,27 @@ class HelloWorld(Resource):
 
 # Adds the resource to our API
 api.add_resource(HelloWorld, "/")
+
 api.add_resource(UserRegister, "/register")
-api.add_resource(UserLogin, "/login")
-api.add_resource(AllCollabs, "/collabs")
-api.add_resource(UserCollabs, "/user-collabs/<_id>")
+api.add_resource(UserLogin, "/auth/login")
 api.add_resource(RefreshToken, "/refresh")
+
+api.add_resource(User, "/user/<_email>")
+api.add_resource(CurrentUser, "/user")
+api.add_resource(UserSkills, "/user/skills/<_email>")
+api.add_resource(UserClasses, "/user/classes/<_email>")
+api.add_resource(CurrentUserUpdate, "/user-update/<_field>")
+
+api.add_resource(Skills, "/skills/<_chars>")
+api.add_resource(Classes, "/classes/<_chars>")
+
+api.add_resource(CreateCollab, "/user-collab")
+api.add_resource(UserCollab, "/user-collab/<_id>")
+api.add_resource(UserCollabs, "/user-collabs/<_type>")
+api.add_resource(InteractCollab, "/interact-collab")
+
+api.add_resource(AllCollabs, "/collabs")
+
 
 if __name__ == "__main__":
     from db import db

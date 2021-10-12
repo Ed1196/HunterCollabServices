@@ -23,3 +23,7 @@ class ClassesModel(db.Model):
     @classmethod
     def find_by_name(cls, name) -> "ClassesModel":
         return cls.query.filter_by(name=name).first()
+
+    @classmethod
+    def starts_with(cls, chars) -> "ClassesModel":
+        return cls.query.filter(ClassesModel.name.contains(chars)).all()

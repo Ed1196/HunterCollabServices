@@ -2,9 +2,33 @@ from typing import Dict, List, Union
 from db import db
 from models.classes import ClassesModel, ClassesJSON
 from models.skills import SkillsModel, SkillsJSON
+from models.collaborations import CollabJSON
 
 # Costume(custom JSON) return type, will help in type hinting
-UserJSON = Dict[str, Union[str, str, str, str, List[SkillsJSON], List[ClassesJSON]]]
+UserJSON = Dict[str, Union[str, str, str, str, List[SkillsJSON], List[ClassesJSON], List[CollabJSON]]]
+"""
+Association tables that will be the connector in a Many-to-Many relationship between two tables.
+    skills: Will associate skills required for a collab to the collabs that have specified them.
+    classes: Will associate classes required for a collab to the collabs that have specified them.
+    members: Will associate members required for a collab to the collabs that the user has joined 
+"""
+skills_association = db.Table(
+    "user_skills",
+    db.Column("user_id", db.Integer, db.ForeignKey("users.id")),
+    db.Column("skill_id", db.Integer, db.ForeignKey("skills.id")),
+)
+
+classes_association = db.Table(
+    "user_classes",
+    db.Column("user_id", db.Integer, db.ForeignKey("users.id")),
+    db.Column("class_id", db.Integer, db.ForeignKey("classes.id")),
+)
+
+collabs_association = db.Table(
+    "user_collabs",
+    db.Column("user_id", db.Integer, db.ForeignKey("users.id")),
+    db.Column("collab_id", db.Integer, db.ForeignKey("collaborations.id")),
+)
 
 
 class UserModel(db.Model):
@@ -48,40 +72,58 @@ class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key="True")
     email = db.Column(db.String(40), unique=True)
     password = db.Column(db.String(40))
+    username = db.Column(db.String(40))
     github = db.Column(db.String(40))
-    linkedin = db.Column(db.String(40))
+    linkedIn = db.Column(db.String(40))
+    skillsList = db.relationship(
+        "SkillsModel",
+        secondary=skills_association,
+        backref=db.backref("users", lazy="joined"),
+    )
+    classesList = db.relationship(
+        "ClassesModel",
+        secondary=classes_association,
+        backref=db.backref("users", lazy="joined"),
+    )
+    collabsList = db.relationship(
+        "CollabModel",
+        secondary=collabs_association,
+        backref=db.backref("users", lazy="joined")
+    )
     profilePicture = None
 
     def __init__(
-        self,
-        email: str,
-        password: str,
-        github: str = "",
-        linkedin: str = "",
-        profilePicture="",
-        skills: List = [],
-        classes: List = [],
+            self,
+            email: str,
+            password: str,
+            username: str = "",
+            github: str = "",
+            linkedIn: str = "",
+            profilePicture="",
+            skills: List = [],
+            classes: List = [],
+            collabs: List = [],
     ):
+        self.username = username
         self.email = email
         self.password = password
         self.github = github
-        self.linkedin = linkedin
+        self.linkedIn = linkedIn
         self.profilePicture = profilePicture
         self.skills = skills
         self.classes = classes
+        self.collabs = collabs
 
     def json(self) -> UserJSON:
         return {
+            "username": self.username,
             "email": self.email,
             "github": self.github,
-            "linkedin": self.linkedin,
+            "linkedIn": self.linkedIn,
             "profile_picture": self.profilePicture,
-            "skills": [
-                skill.json() for skill in self.skills.all()
-            ],  # Uses list comprehension to retrieve items
-            "classes": [
-                course.json() for course in self.classes.all()
-            ],  # Uses list comprehension to retrieve classes
+            "skills": [skill.name for skill in self.skillsList],
+            "classes": [course.name for course in self.classesList],
+            "collabs": [collab.json() for collab in self.collabsList],
         }
 
     def save_to_db(self) -> None:
@@ -90,6 +132,14 @@ class UserModel(db.Model):
 
     def delete_from_db(self) -> None:
         db.session.delete(self)
+        db.session.commit()
+
+    def empty_class_list(self):
+        self.classesList.clear()
+        db.session.commit()
+
+    def empty_skill_list(self):
+        self.skillsList.clear()
         db.session.commit()
 
     @classmethod
@@ -103,3 +153,25 @@ class UserModel(db.Model):
     @classmethod
     def find_all(cls) -> List["UserModel"]:
         return cls.query.all()
+
+    @classmethod
+    def add_skills_to_user(cls, user, skills) -> None:
+        for skillName in skills:
+            skill = SkillsModel.find_by_name(skillName)
+            skill.users.append(user)
+            db.session.commit()
+
+    @classmethod
+    def add_classes_to_user(cls, user, classes) -> None:
+        for className in classes:
+            _class = ClassesModel.find_by_name(className)
+            _class.users.append(user)
+            db.session.commit()
+
+    def add_collab_to_user(self, collab):
+        collab.users.append(self)
+        db.session.commit()
+
+    def remove_collab_from_user(self, collab):
+        collab.users.remove(self)
+        db.session.commit()

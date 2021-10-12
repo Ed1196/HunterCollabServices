@@ -1,8 +1,8 @@
 from typing import Dict, List, Union
 from db import db
-from models.users import UserModel, UserJSON
 from models.skills import SkillsModel, SkillsJSON
 from models.classes import ClassesModel, ClassesJSON
+import math
 
 # Custom(custom JSON) return type, will help with type hinting
 CollabJSON = Dict[
@@ -108,6 +108,9 @@ class CollabModel(db.Model):
         lazy="joined",
     )
 
+    def __eq__(self, other):
+        return self.id == other.id
+
     def __init__(
         self,
         owner: str,
@@ -163,44 +166,92 @@ class CollabModel(db.Model):
         self.date = data["date"]
         self.duration = data["duration"]
         self.location = data["location"]
-        self.status = data["status"]
+        # self.status = data["status"]
         self.title = data["title"]
         self.description = data["description"]
-        self.skills = data["skills"]
-        self.classes = data["classes"]
+        self.add_skills_to_list(self, data["skills"])
+        self.add_classes_to_list(self, data["classes"])
+
+    def empty_class_list(self):
+        self.classesList.clear()
+        db.session.commit()
+
+    def empty_skill_list(self):
+        self.skillsList.clear()
+        db.session.commit()
 
     @classmethod
-    def add_skills_to_list(cls, collab) -> None:
-        for skillName in collab.skills:
-            skill = SkillsModel(skillName)
-            skill.save_to_db()
+    def add_skills_to_list(cls, collab, skills) -> None:
+        collab.empty_skill_list();
+        for skillName in skills:
+            skill = SkillsModel.find_by_name(skillName)
+            if skill is None:
+                skill = SkillsModel(skillName)
+                skill.save_to_db()
             skill.collabs.append(collab)
             db.session.commit()
 
     @classmethod
-    def add_classes_to_list(cls, collab) -> None:
-        for className in collab.classes:
-            course = ClassesModel(className)
-            course.save_to_db()
+    def add_classes_to_list(cls, collab, classes) -> None:
+        collab.empty_class_list()
+        for className in classes:
+            course = ClassesModel.find_by_name(className)
+            if course is None:
+                course = ClassesModel(className)
+                course.save_to_db()
             course.collabs.append(collab)
             db.session.commit()
 
     @classmethod
-    def add_member_to_list(cls, collab) -> None:
-        for memberName in collab.members:
-            user = UserModel.find_by_email(memberName)
-            user.collabs.append(collab)
-            db.session.commit()
+    def add_member_to_list(cls, collab, user) -> None:
+        user.collabs.append(collab)
+        db.session.commit()
+
+    @classmethod
+    def remove_member_to_list(cls, collab, user) -> None:
+        user.collabs.remove(collab)
+        db.session.commit()
 
     @classmethod
     def find_all(cls) -> List["CollabModel"]:
         return cls.query.all()
 
     @classmethod
-    def find_user_collabs(cls, user_id: int) -> List["CollabModel"]:
-        user = UserModel.find_by_id(user_id)
+    def find_user_collabs(cls, user) -> List["CollabModel"]:
         return cls.query.filter_by(owner=user.email).all()
 
     @classmethod
     def find_by_id(cls, _id: int) -> "CollabModel":
         return cls.query.filter_by(id=_id).first()
+
+    @classmethod
+    def find_rec_collabs(cls, user) -> List["CollabModel"]:
+        knownByUserList = user.skillsList + user.classesList
+        knownByUser = dict((rec.name, True) for rec in knownByUserList)
+        allCollabs = cls.query.filter(CollabModel.owner != user.email).all()
+        joinedCollabs = user.collabsList
+        recCollabs = []
+        for collab in allCollabs:
+            if collab in joinedCollabs:
+                continue
+            members = collab.membersList
+            required = collab.skillsList + collab.classesList
+            requiredDict = dict((rec.name, 0) for rec in required)
+            for req in required:
+                knowReq = req.users
+                for member in members:
+                    if member in knowReq:
+                        requiredDict[req.name] += 1
+            thresholdForRating = collab.size/2
+            collabRating = 0
+            requiredMetCount = 0
+            for key in requiredDict:
+                if requiredDict[key] <= thresholdForRating:
+                    if knownByUser.get(key, False):
+                        collabRating += 1
+                else:
+                    requiredMetCount += 1
+            thresholdForAddingCollab = math.floor((len(requiredDict) - requiredMetCount)/2)
+            if collabRating >= thresholdForAddingCollab:
+                recCollabs.append(collab)
+        return recCollabs

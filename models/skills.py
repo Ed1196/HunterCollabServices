@@ -8,7 +8,8 @@ SkillsJSON = Dict[str, Union[int, str]]
 
 class SkillsModel(db.Model):
     """
-        A child class used to represent skills model. Will have a one to many relationship with UsersModel class.
+        A child class used to represent skills model. Will have a many to many relationship with UsersModel,
+        CollabModel class.
 
         Arga
         ----
@@ -31,8 +32,8 @@ class SkillsModel(db.Model):
     def __init__(self, skillName: str):
         self.name = skillName
 
-    def json(self):
-        return {"id": self.id, "name": self.name}
+    def json(self) -> SkillsJSON:
+        return {"name": self.name}
 
     def save_to_db(self) -> None:
         db.session.add(self)
@@ -41,3 +42,7 @@ class SkillsModel(db.Model):
     @classmethod
     def find_by_name(cls, name: str) -> "SkillsModel":
         return cls.query.filter_by(name=name).first()
+
+    @classmethod
+    def starts_with(cls, chars) -> "SkillsModel":
+        return cls.query.filter(SkillsModel.name.contains(chars)).all()

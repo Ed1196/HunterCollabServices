@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields
+from .collaborations import SkillSchema, ClassSchema, CollabSchema
 
 
 class UserSchema(Schema):
@@ -9,3 +10,6 @@ class UserSchema(Schema):
     id = fields.Int()
     email = fields.Str(required=True)
     password = fields.Str(required=True)
+    skills = fields.Nested(SkillSchema, many=True)
+    classes = fields.Nested(ClassSchema, many=True)
+    collabs = fields.Nested(CollabSchema, many=True, required=False)
