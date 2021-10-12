@@ -21,7 +21,8 @@ CORS(app)
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "sqlite:///data.db"  # Config database URI that is used to connect to db.
+] = 'postgres://hsjnrfhnzefrcr:6edcd64ecce0ce22b36a76839f557e8e21b170c7002429455e5f6aa31a8d2f35@ec2-34-205-14-168.compute-1.amazonaws.com:5432/d79mm76ttheq46'
+# "sqlite:///data.db"  # Config database URI that is used to connect to db.
 app.config[
     "SQLALCHEMY_TRACK_MODIFICATIONS"
 ] = False  # Tracks modification of objects and emit signals. Not needed.
