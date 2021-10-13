@@ -82,13 +82,13 @@ class CollabModel(db.Model):
 
     __tablename__ = "collaborations"
     id = db.Column(db.Integer, primary_key=True)
-    owner = db.Column(db.String(30))
+    owner = db.Column(db.String(320))
     size = db.Column(db.Integer)
     date = db.Column(db.Integer)
     duration = db.Column(db.Integer)
-    location = db.Column(db.String(30))
+    location = db.Column(db.String(100))
     status = db.Column(db.Boolean, default=False, server_default="false")
-    title = db.Column(db.String(30))
+    title = db.Column(db.String(100))
     description = db.Column(db.String(256))
     # Third attribute, in the table we want to connect this table to, that will update the association table
     skillsList = db.relationship(

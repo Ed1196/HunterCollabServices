@@ -70,11 +70,11 @@ class UserModel(db.Model):
     # Object properties that will be turned into valid sql queries by SQLAlchemy.
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key="True")
-    email = db.Column(db.String(40), unique=True)
-    password = db.Column(db.String(40))
-    username = db.Column(db.String(40))
-    github = db.Column(db.String(40))
-    linkedIn = db.Column(db.String(40))
+    email = db.Column(db.String(320), unique=True)
+    password = db.Column(db.String(100))
+    username = db.Column(db.String(30))
+    github = db.Column(db.String(100))
+    linkedIn = db.Column(db.String(100))
     skillsList = db.relationship(
         "SkillsModel",
         secondary=skills_association,
