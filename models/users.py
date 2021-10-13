@@ -71,7 +71,7 @@ class UserModel(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key="True")
     email = db.Column(db.String(320), unique=True)
-    password = db.Column(db.String(100))
+    password = db.Column(db.String(320))
     username = db.Column(db.String(30))
     github = db.Column(db.String(100))
     linkedIn = db.Column(db.String(100))
