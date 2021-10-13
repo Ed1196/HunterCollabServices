@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from flask import request
-from flask_jwt_extended import jwt_required, fresh_jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.collaborations import CollabModel
 from marshmallow import ValidationError
 from schemas.collaborations import CollabSchema
