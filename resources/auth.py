@@ -48,10 +48,10 @@ class UserRegister(Resource):
             return err.messages, 400
 
         if UserModel.find_by_email(data["email"]):
+            data['password'] = bcrypt.hashpw((data['password']).encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            print('Here')
             return {"message": "Email already used!"}
 
-        data['password'] = bcrypt.hashpw((data['password']).encode('utf-8'), bcrypt.gensalt())
-        data['password'] = (data['password']).decode('utf-8', 'ignore')
         user = UserModel(**data)
         user.save_to_db()
         access_token = create_access_token(identity=user.id, fresh=True)
@@ -91,7 +91,8 @@ class UserLogin(Resource):
         except ValidationError as err:
             return err.messages, 400
         user = UserModel.find_by_email(data["email"])
-        if user and bcrypt.checkpw((data["password"]).encode('utf8'), user.password):
+        password_hashed = bcrypt.hashpw(data["password"].encode('utf8'), user.password.encode('utf-8')).decode('utf-8')
+        if user and (password_hashed == user.password):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             return {"accessToken": access_token, "refreshToken": refresh_token, "success": True}, 200
