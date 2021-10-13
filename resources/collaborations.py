@@ -37,11 +37,12 @@ class UserCollabs(Resource):
         get(): Handles get request to the endpoint associated with Collaboration. Will retrieve all collaboration.
     """
 
-    @jwt_required
+    @jwt_required()
     def get(self, _type):
         """Handles get request to the endpoint associated with UserCollabs.
            Will retrieve a single collab or all collabs for a user.
 
+        :param _type:
         :param _id: Id of the collab that needs to be retrieved.
         :return: The specified collab or all of a users collab.
         """
@@ -153,7 +154,7 @@ class UserCollab(Resource):
         get(): Handles get request to the endpoint associated with Collaboration. Will retrieve all collaboration.
     """
 
-    @jwt_required
+    @jwt_required()
     def get(self, _id):
         """Handles get request to the endpoint associated with UserCollabs.
            Will retrieve a single collab or all collabs for a user.
@@ -192,7 +193,7 @@ class UserCollab(Resource):
 
 
 class AllCollabs(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self):
         """Handles get request to the endpoint associated with Collaboration. Will retrieve all collaboration.
 
