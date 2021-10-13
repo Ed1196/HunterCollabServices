@@ -36,7 +36,7 @@ class User(Resource):
             Method that handles the response that will be created when a user sends a request to the API.
             get(): Handles post request to the endpoint associated with User. Will retrieve a users details.
     """
-    @jwt_required
+    @jwt_required()
     def get(self, _email):
         try:
             user = UserModel.find_by_email(_email)
@@ -48,7 +48,7 @@ class User(Resource):
 
 
 class UserSkills(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self, _email):
         try:
             user = UserModel.find_by_email(_email)
@@ -61,7 +61,7 @@ class UserSkills(Resource):
 
 
 class UserClasses(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self, _email):
         try:
             user = UserModel.find_by_email(_email)

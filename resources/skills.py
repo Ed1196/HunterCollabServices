@@ -7,7 +7,7 @@ RETRIEVAL_ERROR = "Error retrieving skills."
 
 class Skills(Resource):
 
-    @jwt_required
+    @jwt_required()
     def get(self, _chars):
         skills = [skill.name for skill in SkillsModel.starts_with(_chars)]
         if skills is not None:

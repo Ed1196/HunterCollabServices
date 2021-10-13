@@ -70,7 +70,7 @@ class UserCollabs(Resource):
 
 
 class CreateCollab(Resource):
-    @jwt_required
+    @jwt_required()
     def post(self):
         """Handles post request to the endpoint associated with UserCollabs. Will create a collaboration.
 
@@ -171,7 +171,7 @@ class UserCollab(Resource):
             return {"success": True, "collab": collabs.json()}, 200
         return {"success": False, "message": RETRIEVAL_ERROR}
 
-    @jwt_required
+    @jwt_required()
     def put(self, _id):
         data = request.get_json()
         collab = CollabModel.find_by_id(_id)
@@ -181,7 +181,7 @@ class UserCollab(Resource):
             return {"success": True, "collab": collab.json()}, 200
         return {"success": False, "message": RETRIEVAL_ERROR}
 
-    @jwt_required
+    @jwt_required()
     def delete(self, _id):
         collab = CollabModel.find_by_id(_id)
         if collab is not None:
@@ -206,7 +206,7 @@ class AllCollabs(Resource):
 
 
 class InteractCollab(Resource):
-    @jwt_required
+    @jwt_required()
     def post(self):
         data = request.get_json()
         user_id = get_jwt_identity()

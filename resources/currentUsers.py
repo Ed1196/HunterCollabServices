@@ -22,7 +22,7 @@ user_schema = UserSchema()
 
 
 class CurrentUser(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self):
         try:
             user_id = get_jwt_identity()
@@ -35,7 +35,7 @@ class CurrentUser(Resource):
 
 
 class CurrentUserUpdate(Resource):
-    @jwt_required
+    @jwt_required()
     def post(self, _field):
         try:
             user_id = get_jwt_identity()
