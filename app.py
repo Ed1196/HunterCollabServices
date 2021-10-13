@@ -35,9 +35,9 @@ jwt = JWTManager(
 
 
 # Use to create local database.
-# @app.before_first_request
-# def create_tables():
-#    db.create_all()
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 
 class HelloWorld(Resource):
