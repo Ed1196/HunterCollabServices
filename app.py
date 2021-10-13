@@ -18,11 +18,6 @@ from db import db
 from models import *
 
 app = Flask(__name__)
-db.app = app
-db.init_app(app)
-api = Api(app)
-CORS(app)
-
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = 'postgresql://hsjnrfhnzefrcr:6edcd64ecce0ce22b36a76839f557e8e21b170c7002429455e5f6aa31a8d2f35@ec2-34-205-14-168.compute-1.amazonaws.com:5432/d79mm76ttheq46'
@@ -32,6 +27,12 @@ app.config[
 ] = False  # Tracks modification of objects and emit signals. Not needed.
 app.config["PROPAGATE_EXCEPTIONS"] = True  # Raises FLASK-JWT errors.
 app.secret_key = "Edwin"
+db.app = app
+db.init_app(app)
+api = Api(app)
+CORS(app)
+
+
 
 jwt = JWTManager(
     app
