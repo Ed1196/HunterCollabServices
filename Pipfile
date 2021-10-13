@@ -13,8 +13,7 @@ flask-jwt-extended = "*"
 marshmallow = "==3.5.1"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
-
-
