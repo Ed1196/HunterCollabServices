@@ -14,13 +14,12 @@ from resources.auth import UserRegister, UserLogin, RefreshToken
 from resources.collaborations import UserCollab, UserCollabs, AllCollabs, CreateCollab, InteractCollab
 from resources.skills import Skills
 from resources.classes import Classes
-from flask_sqlalchemy import SQLAlchemy
-from models.users import UserModel
-from models.collaborations import CollabModel
-from models.skills import SkillsModel
-from models.classes import ClassesModel
+from db import db
+from models import *
 
 app = Flask(__name__)
+db.app = app
+db.init_app(app)
 api = Api(app)
 CORS(app)
 
@@ -37,10 +36,6 @@ app.secret_key = "Edwin"
 jwt = JWTManager(
     app
 )  # Creates an object to hold JWT settings and callback funcs. No longer creates an /auth endpoint.
-
-db = SQLAlchemy(app) # Binds the instance of SQLAlchemy to this app.
-db.app = app
-db.init_app(app)
 
 
 class HelloWorld(Resource):
@@ -70,7 +65,6 @@ api.add_resource(UserCollabs, "/user-collabs/<_type>")
 api.add_resource(InteractCollab, "/interact-collab")
 
 api.add_resource(AllCollabs, "/collabs")
-
 
 if __name__ == "__main__":
     app.run()
