@@ -84,8 +84,8 @@ class CollabModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     owner = db.Column(db.String(320))
     size = db.Column(db.Integer)
-    date = db.Column(db.Integer)
-    duration = db.Column(db.Integer)
+    date = db.Column(db.String(100))
+    duration = db.Column(db.String(100))
     location = db.Column(db.String(100))
     status = db.Column(db.Boolean, default=False, server_default="false")
     title = db.Column(db.String(100))
@@ -115,8 +115,8 @@ class CollabModel(db.Model):
         self,
         owner: str,
         size: int,
-        date: int,
-        duration: int,
+        date: str,
+        duration:str,
         location: str,
         status: bool,
         title: str,
@@ -142,8 +142,8 @@ class CollabModel(db.Model):
             "id": self.id,
             "owner": self.owner,
             "size": self.size,
-            "date": self.date,
-            "duration": self.duration,
+            "date": int(self.date),
+            "duration": int(self.duration),
             "location": self.location,
             "status": self.status,
             "title": self.title,

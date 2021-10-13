@@ -91,6 +91,8 @@ class CreateCollab(Resource):
             jsonData = request.get_json()
             jsonData['owner'] = user.email
             jsonData['status'] = True
+            jsonData['date'] = str(jsonData['date'])
+            jsonData['duration'] = str(jsonData['duration'])
             for skill in jsonData["skills"]:
                 collabSkills.append(skill)
                 if SkillsModel.find_by_name(skill) is None:
