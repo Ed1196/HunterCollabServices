@@ -14,7 +14,6 @@ from resources.auth import UserRegister, UserLogin, RefreshToken
 from resources.collaborations import UserCollab, UserCollabs, AllCollabs, CreateCollab, InteractCollab
 from resources.skills import Skills
 from resources.classes import Classes
-from db import db
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
