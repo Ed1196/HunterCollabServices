@@ -34,12 +34,6 @@ jwt = JWTManager(
 )  # Creates an object to hold JWT settings and callback funcs. No longer creates an /auth endpoint.
 
 
-# Use to create local database.
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-
 class HelloWorld(Resource):
     def get(self):
         return {"hello": "world"}
@@ -70,7 +64,4 @@ api.add_resource(AllCollabs, "/collabs")
 
 
 if __name__ == "__main__":
-    from db import db
-
-    db.init_app(app)  # Binds the instance of SQLAlchemy to this app.
     app.run(debug=True)
