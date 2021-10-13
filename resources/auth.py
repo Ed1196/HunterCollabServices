@@ -51,12 +51,11 @@ class UserRegister(Resource):
             return {"message": "Email already used!"}
 
         data['password'] = bcrypt.hashpw((data['password']).encode('utf-8'), bcrypt.gensalt())
+        data['password'] = (data['password']).decode('utf-8', 'ignore')
         user = UserModel(**data)
         user.save_to_db()
         access_token = create_access_token(identity=user.id, fresh=True)
         refresh_token = create_refresh_token(user.id)
-        print(access_token)
-        print(refresh_token)
 
         return {
                    "accessToken": access_token,
