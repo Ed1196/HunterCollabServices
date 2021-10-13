@@ -14,6 +14,8 @@ from resources.auth import UserRegister, UserLogin, RefreshToken
 from resources.collaborations import UserCollab, UserCollabs, AllCollabs, CreateCollab, InteractCollab
 from resources.skills import Skills
 from resources.classes import Classes
+from db import db
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 api = Api(app)
@@ -32,6 +34,14 @@ app.secret_key = "Edwin"
 jwt = JWTManager(
     app
 )  # Creates an object to hold JWT settings and callback funcs. No longer creates an /auth endpoint.
+
+db = SQLAlchemy(app) # Binds the instance of SQLAlchemy to this app.
+
+
+# Use to create local database.
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 
 class HelloWorld(Resource):
