@@ -7,7 +7,6 @@ verify_ssl = true
 
 [packages]
 aniso8601 = "==9.0.1"
-bcrypt = "==3.2.0"
 cffi = "==1.14.6"
 click = "==8.0.3"
 flask-marshmallow = "==0.14.0"
@@ -17,6 +16,8 @@ importlib-metadata = "==4.8.1"
 itsdangerous = "==2.0.1"
 marshmallow = "==3.5.1"
 marshmallow-sqlalchemy = "==0.26.1"
+psycopg2 = "==2.7.7"
+psycopg2-binary = "==2.9.1"
 pycparser = "==2.20"
 pytz = "==2021.3"
 six = "==1.16.0"
@@ -32,8 +33,6 @@ MarkupSafe = "==2.0.1"
 PyJWT = "==2.2.0"
 SQLAlchemy = "==1.4.25"
 Werkzeug = "==2.0.2"
-psycopg2 = "==2.7.7"
-psycopg2-binary = "==2.9.1"
 
 [requires]
 python_version = "3.7"

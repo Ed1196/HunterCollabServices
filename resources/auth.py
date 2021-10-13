@@ -2,10 +2,10 @@ from flask import request
 from flask_restful import Resource, reqparse
 from models.users import UserModel
 from schemas.users import UserSchema
-from werkzeug.security import safe_str_cmp
+from werkzeug.security import generate_password_hash, check_password_hash
 from marshmallow import ValidationError
 import json
-import bcrypt
+
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -48,10 +48,9 @@ class UserRegister(Resource):
             return err.messages, 400
 
         if UserModel.find_by_email(data["email"]):
-            data['password'] = bcrypt.hashpw((data['password']).encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            print('Here')
             return {"message": "Email already used!"}
 
+        data['password'] = generate_password_hash(data['password'])
         user = UserModel(**data)
         user.save_to_db()
         access_token = create_access_token(identity=user.id, fresh=True)
@@ -91,8 +90,7 @@ class UserLogin(Resource):
         except ValidationError as err:
             return err.messages, 400
         user = UserModel.find_by_email(data["email"])
-        password_hashed = bcrypt.hashpw(data["password"].encode('utf8'), user.password.encode('utf-8')).decode('utf-8')
-        if user and (password_hashed == user.password):
+        if user and check_password_hash(user.password, data['password']):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             return {"accessToken": access_token, "refreshToken": refresh_token, "success": True}, 200
