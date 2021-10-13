@@ -39,6 +39,8 @@ jwt = JWTManager(
 )  # Creates an object to hold JWT settings and callback funcs. No longer creates an /auth endpoint.
 
 db = SQLAlchemy(app) # Binds the instance of SQLAlchemy to this app.
+db.app = app
+db.init_app(app)
 
 
 class HelloWorld(Resource):
