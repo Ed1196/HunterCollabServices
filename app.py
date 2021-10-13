@@ -32,7 +32,7 @@ else:
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # Tracks modification of objects and emit signals. Not needed.
 app.config["PROPAGATE_EXCEPTIONS"] = True  # Raises FLASK-JWT errors.
-app.secret_key = os.urandom(24)
+app.secret_key = "Edwin"
 db.app = app
 db.init_app(app)
 api = Api(app)
