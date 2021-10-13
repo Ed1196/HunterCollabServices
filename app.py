@@ -15,6 +15,10 @@ from resources.collaborations import UserCollab, UserCollabs, AllCollabs, Create
 from resources.skills import Skills
 from resources.classes import Classes
 from flask_sqlalchemy import SQLAlchemy
+from models.users import UserModel
+from models.collaborations import CollabModel
+from models.skills import SkillsModel
+from models.classes import ClassesModel
 
 app = Flask(__name__)
 api = Api(app)
