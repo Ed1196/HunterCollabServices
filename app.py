@@ -20,7 +20,7 @@ from models import *
 
 app = Flask(__name__)
 
-ENV = 'dev'
+ENV = 'pro'
 
 if ENV == 'dev':
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"  # Config database URI that is used to connect to db.
